@@ -6,7 +6,7 @@ import { Hasher } from '../Hasher.ts';
 const TESTFILE_PATH = './test/mycat.jpg';
 const TESHFILE_HASH = '71731620ecd7e52011405c8249e130b70386a128d9818abaeab8989bb37b37cc';
 
-Deno.test('Digest from Unit8Array',async () => {
+Deno.test('Update with Unit8Array',async () => {
   const hasher = new Hasher('SHA-256');
   const image = await Deno.open(TESTFILE_PATH, {
     read: true
@@ -25,7 +25,7 @@ Deno.test('Digest from Unit8Array',async () => {
   assertEquals(hasher.digest('hex'), TESHFILE_HASH);
 });
 
-Deno.test('Digest from ReadableStream<Unit8Array>',async () => {
+Deno.test('Update with ReadableStream<Unit8Array>',async () => {
   const hasher = new Hasher('SHA-256');
   const image = await Deno.open(TESTFILE_PATH, {
     read: true
