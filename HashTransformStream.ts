@@ -21,6 +21,21 @@ export class HashTransformer implements Transformer<Uint8Array, Uint8Array> {
   }
 }
 
+/**
+ * Hasher in TransformStream
+ * @example
+ * ```typescript
+ * const response = await fetch('URL');
+ * const fileTo = Deno.opne('./example.txt', { create: true, write: true });
+ * const hasher = HashTransformStream = new HashTransformStream('SHA-256')
+ * 
+ * await response.body!
+ *   .pipeThrough(hasher)
+ *   .pipeTo(fileTo.writable);
+ * 
+ * hasher.digest('hex') // -> string
+ * ```
+ */
 export class HashTransformStream extends TransformStream {
   transformer: HashTransformer;
   constructor (algorithm: WasmDigestAlgorithms) {
