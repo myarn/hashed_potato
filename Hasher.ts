@@ -5,6 +5,7 @@ import {
 } from './deps/std.ts';
 
 export type WasmDigestAlgorithms = typeof wasmDigestAlgorithms[number];
+export type toHashEncodinegType = Parameters<typeof toHashString>[1];
 
 export class Hasher {
   context: InstanceType<ReturnType<typeof instantiateWasm>['DigestContext']>
@@ -42,13 +43,13 @@ export class Hasher {
   }
 
   digest (): Uint8Array;
-  digest (encoding?: Parameters<typeof toHashString>[1]): string;
-  digest (encoding?: Parameters<typeof toHashString>[1]) {
+  digest (encoding: toHashEncodinegType): string;
+  digest (encoding?: toHashEncodinegType) {
     const result = this.context.digestAndDrop(undefined);
-    if (!encoding) {
-      return result
-    } else {
+    if (encoding) {
       return toHashString(result, encoding);
+    } else {
+      return result;
     }
   }
 }
