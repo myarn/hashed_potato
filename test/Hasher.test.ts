@@ -31,7 +31,7 @@ Deno.test('Digest from ReadableStream<Unit8Array>',async () => {
     read: true
   });
 
-  await hasher.update(image.readable);
+  await hasher.updateByReadableStream(image.readable);
 
   assertEquals(hasher.digest('hex'), TESHFILE_HASH);
 });

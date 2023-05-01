@@ -19,27 +19,22 @@ export class Hasher {
     this.context = new wasmCrypto.DigestContext(algorithm);
   }
 
-  update (_data: Uint8Array): void;
-  update (_data: ReadableStream<Uint8Array>): Promise<void>;
-  update (_data: Uint8Array | ReadableStream<Uint8Array>) {
-    if (_data instanceof Uint8Array) {
-      this.context.update(_data);
-    } else if (_data instanceof ReadableStream) {
-      return new Promise<void>(async (resolve) => {
-        const reader = _data.getReader();
+  update (data: Uint8Array) {
+    this.context.update(data);
+  }
 
-        while (true) {
-          const {value, done} = await reader.read();
+  async updateByReadableStream (data: ReadableStream<Uint8Array>): Promise<void> {
+      const reader = data.getReader();
 
-          if (done) break;
+      while (true) {
+        const {value, done} = await reader.read();
 
-          this.update(value);
-        }
+        if (done) break;
 
-        reader.releaseLock();
-        resolve();
-      });
-    }
+        this.update(value);
+      }
+
+      reader.releaseLock();
   }
 
   digest (): Uint8Array;
