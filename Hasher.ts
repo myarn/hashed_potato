@@ -1,6 +1,7 @@
 import {
   wasmDigestAlgorithms,
-  instantiateWasm
+  instantiateWasm,
+  toHashString
 } from './deps/std.ts';
 
 export type WasmDigestAlgorithms = typeof wasmDigestAlgorithms[number];
@@ -23,7 +24,7 @@ export class Hasher {
     if (_data instanceof Uint8Array) {
       this.context.update(_data);
     } else if (_data instanceof ReadableStream) {
-      return new Promise<void>(async (resolve, reject) => {
+      return new Promise<void>(async (resolve) => {
         const reader = _data.getReader();
 
         while (true) {
@@ -31,7 +32,7 @@ export class Hasher {
 
           if (done) break;
 
-          this.update(value)
+          this.update(value);
         }
 
         reader.releaseLock();
@@ -40,7 +41,14 @@ export class Hasher {
     }
   }
 
-  digest () {
-    return this.context.digestAndDrop(undefined);
+  digest (): Uint8Array;
+  digest (encoding?: Parameters<typeof toHashString>[1]): string;
+  digest (encoding?: Parameters<typeof toHashString>[1]) {
+    const result = this.context.digestAndDrop(undefined);
+    if (!encoding) {
+      return result
+    } else {
+      return toHashString(result, encoding);
+    }
   }
 }
